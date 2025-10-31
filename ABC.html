@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Employee Dashboard</title>
+
+  <!-- TailwindCSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- FullCalendar -->
+  <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/main.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/main.min.js"></script>
+</head>
+<body class="bg-gray-100 text-gray-800">
+
+  <!-- Navbar -->
+  <nav class="flex justify-between items-center px-8 py-4 bg-white shadow-md">
+    <h1 class="text-2xl font-bold text-indigo-700">Employee Dashboard</h1>
+    <button onclick="logout()" class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition">
+      Logout
+    </button>
+  </nav>
+
+  <!-- Main Content -->
+  <div class="max-w-6xl mx-auto py-10 px-5">
+    <h2 class="text-3xl font-bold mb-6 text-center text-indigo-700">Welcome, Employee 👋</h2>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+
+      <!-- Calendar -->
+      <div class="bg-white shadow-lg rounded-xl p-6">
+        <h3 class="text-xl font-semibold mb-4 text-indigo-600">Attendance Calendar</h3>
+        <div id="calendar"></div>
+      </div>
+
+      <!-- Punch In/Out -->
+      <div class="bg-white shadow-lg rounded-xl p-6 flex flex-col justify-center items-center">
+        <h3 class="text-xl font-semibold mb-4 text-indigo-600">Work Attendance</h3>
+        
+        <p id="statusText" class="mb-6 text-gray-700 text-lg">You are currently <span class="font-bold">Not Punched In</span>.</p>
+
+        <button id="punchInBtn" 
+                onclick="punchIn()" 
+                class="mb-4 w-40 py-3 bg-green-500 text-white rounded-lg shadow-md hover:bg-green-600 transition">
+          ✅ Punch In
+        </button>
+
+        <button id="punchOutBtn" 
+                onclick="punchOut()" 
+                class="w-40 py-3 bg-red-500 text-white rounded-lg shadow-md hover:bg-red-600 transition hidden">
+          ❌ Punch Out
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script>
+    let calendar; // global calendar instance
+
+    // Logout Function
+    function logout() {
+      alert("You have been logged out!");
+      window.location.href = "index.html"; // back to login
+    }
+
+    // Get today's date (YYYY-MM-DD format)
+    function getToday() {
+      let today = new Date();
+      return today.toISOString().split("T")[0];
+    }
+
+    // Punch In Logic
+    function punchIn() {
+      document.getElementById("statusText").innerHTML = "You are currently <span class='font-bold text-green-600'>Punched In</span>.";
+      document.getElementById("punchInBtn").classList.add("hidden");
+      document.getElementById("punchOutBtn").classList.remove("hidden");
+
+      // Add Punch-In Event to Calendar
+      calendar.addEvent({
+        title: "Punched In",
+        start: getToday(),
+        color: "green"
+      });
+    }
+
+    // Punch Out Logic
+    function punchOut() {
+      document.getElementById("statusText").innerHTML = "You are currently <span class='font-bold text-red-600'>Punched Out</span>.";
+      document.getElementById("punchOutBtn").classList.add("hidden");
+      document.getElementById("punchInBtn").classList.remove("hidden");
+
+      // Add Punch-Out Event to Calendar
+      calendar.addEvent({
+        title: "Punched Out",
+        start: getToday(),
+        color: "red"
+      });
+    }
+
+    // Calendar Setup
+    document.addEventListener('DOMContentLoaded', function() {
+      var calendarEl = document.getElementById('calendar');
+      calendar = new FullCalendar.Calendar(calendarEl, {
+        initialView: 'dayGridMonth',
+        height: 450,
+        events: [] // empty at start, will be filled dynamically
+      });
+      calendar.render();
+    });
+  </script>
+
+</body>
+</html>
